@@ -67,5 +67,5 @@ def year_vs_genre():
     table_data=get_year_vs_genre(HTML=True)
     return render_template("genre_distribution_V2.html",table_data=table_data,heading="Year vs Genre",AI_analysis=Interpret_HTML(data,"Year vs Genre"))
 
-if __main__="__name__":
+if __main__=="__name__":
     app.run(host="0.0.0.0",debug=True)
