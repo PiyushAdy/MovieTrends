@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieTrends | Top Drama Movies 2019</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ff6b6b;
+            --secondary: #4ecdc4;
+            --dark: #2d3436;
+            --light: #f9f9f9;
+            --gray: #636e72;
+            --text-dark: #2d3436;
+            --text-light: #f9f9f9;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --card-bg: white;
+            --hero-bg: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            --table-header: #ff6b6b;
+            --table-even: rgba(78, 205, 196, 0.1);
+            --table-hover: rgba(255, 107, 107, 0.1);
+        }
+
+        .dark-mode {
+            --primary: #ff6b6b;
+            --secondary: #4ecdc4;
+            --dark: #f9f9f9;
+            --light: #1a1a1a;
+            --gray: #a0a0a0;
+            --text-dark: #f9f9f9;
+            --text-light: #2d3436;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --card-bg: #2d3436;
+            --hero-bg: linear-gradient(135deg, #c34646, #339994);
+            --table-header: #c34646;
+            --table-even: rgba(51, 153, 148, 0.2);
+            --table-hover: rgba(195, 70, 70, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.1s, color 0.1s;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo i {
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            margin-left: 30px;
+            font-weight: 500;
+            transition: color 0.1s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .mode-toggle {
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            font-size: 20px;
+            cursor: pointer;
+            margin-left: 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--hero-bg);
+            color: white;
+            padding: 120px 0 60px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 20px 0 60px;
+        }
+
+        /* AI Trend Analysis */
+        .trend-analysis {
+            margin-bottom: 40px;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .trend-header {
+            padding: 15px 20px;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .trend-header:hover {
+            background-color: #ff5252;
+        }
+
+        .trend-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.1s ease-out, padding 0.1s ease;
+        }
+
+        .trend-content.active {
+            padding: 20px;
+            max-height: 1000px;
+        }
+
+        .trend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .trend-card {
+            background-color: var(--light);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .trend-card h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .trend-card p {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+        }
+
+        /* Movies Table */
+        .movies-table-container {
+            overflow-x: auto;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+        }
+
+        .movies-table-header {
+            padding: 15px 20px;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .movies-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+
+        .movies-table th {
+            background-color: var(--table-header);
+            color: white;
+            text-align: left;
+            padding: 15px;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        .movies-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .movies-table tr {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .movies-table tr:nth-child(even) {
+            background-color: var(--table-even);
+        }
+
+        .movies-table tr:hover {
+            background-color: var(--table-hover);
+        }
+
+        .rating-pill {
+            background-color: var(--secondary);
+            color: white;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 20px;
+            display: inline-block;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: var(--light);
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: background-color 0.1s;
+        }
+
+        .back-btn:hover {
+            background-color: #3db9b1;
+        }
+
+        .back-btn i {
+            margin-right: 8px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .nav-links a {
+                margin-left: 15px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .nav-links a:not(:last-child) {
+                display: none;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">
+                    <i class="fas fa-film"></i>
+                    <span>MovieTrends</span>
+                </a>
+                <div class="nav-links">
+                    <a href="index.html#dashboard">Dashboard</a>
+                    <a href="index.html#team">Team</a>
+                    <button class="mode-toggle" id="modeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>{{heading}}</h1>
+            <p>Curated list of {{heading}} according to imdb ratings and votes</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="main-content">
+        <div class="container">
+            <a href="/" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+
+            <!-- AI Trend Analysis -->
+            <div class="trend-analysis">
+                <div class="trend-header" id="trendHeader">
+                    <span>AI Trend Analysis</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="trend-content" id="trendContent">
+                    <div class="trend-grid">
+                        {{ AI_analysis | safe}}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Movies Table -->
+            <div class="movies-table-container">
+                <div class="movies-table-header">
+                    Movie Listings
+                </div>
+                <div style="max-height: 500px; overflow-y: auto;">
+                   {{ table_data | safe}}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 MovieTrends. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Dark Mode Toggle
+        const modeToggle = document.getElementById('modeToggle');
+        modeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const icon = modeToggle.querySelector('i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+
+        // Trend Analysis Toggle
+        const trendHeader = document.getElementById('trendHeader');
+        const trendContent = document.getElementById('trendContent');
+
+        trendHeader.addEventListener('click', () => {
+            trendContent.classList.toggle('active');
+            toggleChevron(trendHeader);
+        });
+
+        function toggleChevron(element) {
+            const icon = element.querySelector('i');
+            if (icon.classList.contains('fa-chevron-down')) {
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        }
+
+        // Check for URL parameters to determine if we should automatically expand sections
+        window.addEventListener('DOMContentLoaded', () => {
+            // Get the dark mode preference from localStorage if available
+            const darkModePreference = localStorage.getItem('darkMode');
+            if (darkModePreference === 'enabled') {
+                document.body.classList.add('dark-mode');
+                const icon = modeToggle.querySelector('i');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        });
+
+        // Save dark mode preference
+        modeToggle.addEventListener('click', () => {
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        });
+    </script>
+</body>
+</html>

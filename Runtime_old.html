@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieTrends | Runtime Distribution Per Year</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.5.0/recharts.min.js"></script>
+    <style>
+        :root {
+            --primary: #ff6b6b;
+            --secondary: #4ecdc4;
+            --dark: #2d3436;
+            --light: #f9f9f9;
+            --gray: #636e72;
+            --text-dark: #2d3436;
+            --text-light: #f9f9f9;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --card-bg: white;
+            --hero-bg: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            --table-header: #ff6b6b;
+            --table-even: rgba(78, 205, 196, 0.1);
+            --table-hover: rgba(255, 107, 107, 0.1);
+        }
+
+        .dark-mode {
+            --primary: #ff6b6b;
+            --secondary: #4ecdc4;
+            --dark: #f9f9f9;
+            --light: #1a1a1a;
+            --gray: #a0a0a0;
+            --text-dark: #f9f9f9;
+            --text-light: #2d3436;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --card-bg: #2d3436;
+            --hero-bg: linear-gradient(135deg, #c34646, #339994);
+            --table-header: #c34646;
+            --table-even: rgba(51, 153, 148, 0.2);
+            --table-hover: rgba(195, 70, 70, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo i {
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            margin-left: 30px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .mode-toggle {
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            font-size: 20px;
+            cursor: pointer;
+            margin-left: 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--hero-bg);
+            color: white;
+            padding: 120px 0 60px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 20px 0 60px;
+        }
+
+        /* AI Trend Analysis */
+        .trend-analysis {
+            margin-bottom: 40px;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .trend-header {
+            padding: 15px 20px;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .trend-header:hover {
+            background-color: #ff5252;
+        }
+
+        .trend-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+        }
+
+        .trend-content.active {
+            padding: 20px;
+            max-height: 1000px;
+        }
+
+        .trend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .trend-card {
+            background-color: var(--light);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .trend-card h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .trend-card p {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+        }
+
+        /* Runtime Chart */
+        .chart-container {
+            margin-bottom: 40px;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .chart-header {
+            padding: 15px 20px;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .chart-content {
+            padding: 20px;
+            height: 400px;
+            width: 100%;
+        }
+
+        /* Runtime Table */
+        .runtime-table-container {
+            overflow-x: auto;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+        }
+
+        .runtime-table-header {
+            padding: 15px 20px;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .runtime-table-header:hover {
+            background-color: #ff5252;
+        }
+
+        .runtime-table-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+        }
+
+        .runtime-table-content.active {
+            padding: 0;
+            max-height: 1000px;
+        }
+
+        .runtime-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        .runtime-table th {
+            background-color: var(--table-header);
+            color: white;
+            text-align: left;
+            padding: 15px;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        .runtime-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .runtime-table tr {
+            transition: background-color 0.2s;
+        }
+
+        .runtime-table tr:nth-child(even) {
+            background-color: var(--table-even);
+        }
+
+        .runtime-table tr:hover {
+            background-color: var(--table-hover);
+        }
+
+        .runtime-pill {
+            background-color: var(--secondary);
+            color: white;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 20px;
+            display: inline-block;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: #3db9b1;
+        }
+
+        .back-btn i {
+            margin-right: 8px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: var(--light);
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .nav-links a {
+                margin-left: 15px;
+                font-size: 0.9rem;
+            }
+
+            .chart-content {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .nav-links a:not(:last-child) {
+                display: none;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .chart-content {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">
+                    <i class="fas fa-film"></i>
+                    <span>MovieTrends</span>
+                </a>
+                <div class="nav-links">
+                    <a href="index.html#dashboard">Dashboard</a>
+                    <a href="index.html#team">Team</a>
+                    <button class="mode-toggle" id="modeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Movie Runtime Distribution Per Year</h1>
+            <p>Historical analysis of average movie runtimes by release year</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="main-content">
+        <div class="container">
+            <a href="index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+
+            <!-- AI Trend Analysis -->
+            <div class="trend-analysis">
+                <div class="trend-header" id="trendHeader">
+                    <span>AI Trend Analysis</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="trend-content" id="trendContent">
+                    <div class="trend-grid">
+                        <div class="trend-card">
+                            <h3>Historical Patterns</h3>
+                            <p>Movie runtimes have shown a gradual increase over the decades, with the average length rising from approximately 50 minutes in early cinema to over 100 minutes in modern films.</p>
+                        </div>
+                        <div class="trend-card">
+                            <h3>Genre Influence</h3>
+                            <p>Drama and epic genres consistently show longer average runtimes compared to comedies and animated features, with a typical differential of 15-30 minutes.</p>
+                        </div>
+                        <div class="trend-card">
+                            <h3>Award Recognition</h3>
+                            <p>Award-winning films tend to have runtimes 12-18% longer than the yearly average, suggesting a correlation between extended storytelling and critical acclaim.</p>
+                        </div>
+                        <div class="trend-card">
+                            <h3>Recent Trends</h3>
+                            <p>Since 2010, average movie runtimes have stabilized around 110 minutes, with streaming-first releases showing slightly shorter durations than theatrical releases.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Runtime Chart -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    Average Runtime By Year
+                </div>
+                <div class="chart-content" id="runtimeChart">
+                    <!-- Chart will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Runtime Table -->
+            <div class="runtime-table-container">
+                <div class="runtime-table-header" id="tableHeader">
+                    <span>Detailed Runtime Data</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="runtime-table-content" id="tableContent">
+                    <div style="max-height: 500px; overflow-y: auto;">
+                        <table class="runtime-table" id="runtimeTable">
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>Average Runtime (minutes)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               <tr><td>Test</td><td><span class="runtime-pill">Test</span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 MovieTrends. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Sample JSON data
+        let runtimeData = JSON.parse('[{"startYear":1894.0,"Average_Runtime":45.0},{"startYear":1897.0,"Average_Runtime":50.0}]');
+        
+        // Function to load and process the JSON data
+        function processRuntimeData(data) {
+            // Sort the data by year
+            data.sort((a, b) => a.startYear - b.startYear);
+            
+            // Populate the table
+            const tableBody = document.querySelector('#runtimeTable tbody');
+            tableBody.innerHTML = '';
+            
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                const yearCell = document.createElement('td');
+                yearCell.textContent = Math.round(item.startYear);
+                
+                const runtimeCell = document.createElement('td');
+                const runtimePill = document.createElement('span');
+                runtimePill.className = 'runtime-pill';
+                runtimePill.textContent = item.Average_Runtime.toFixed(1);
+                runtimeCell.appendChild(runtimePill);
+                
+                row.appendChild(yearCell);
+                row.appendChild(runtimeCell);
+                tableBody.appendChild(row);
+            });
+            
+            // Render the chart
+            renderRuntimeChart(data);
+        }
+        
+        // Function to render the runtime chart
+        function renderRuntimeChart(data) {
+            const chartContainer = document.getElementById('runtimeChart');
+            
+            // Format data for the chart
+            const chartData = data.map(item => ({
+                year: Math.round(item.startYear),
+                runtime: item.Average_Runtime
+            }));
+            
+            // Get theme variables
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            const textColor = isDarkMode ? '#f9f9f9' : '#2d3436';
+            const primaryColor = '#ff6b6b';
+            const secondaryColor = '#4ecdc4';
+            
+            // Create a simple SVG chart
+            const svgWidth = chartContainer.clientWidth;
+            const svgHeight = chartContainer.clientHeight;
+            const padding = { top: 40, right: 40, bottom: 60, left: 60 };
+            
+            // Find min and max values
+            const years = chartData.map(d => d.year);
+            const runtimes = chartData.map(d => d.runtime);
+            const minYear = Math.min(...years);
+            const maxYear = Math.max(...years);
+            const minRuntime = Math.min(...runtimes);
+            const maxRuntime = Math.max(...runtimes);
+            
+            // Create scales
+            const xScale = (x) => {
+                return ((x - minYear) / (maxYear - minYear)) * (svgWidth - padding.left - padding.right) + padding.left;
+            };
+            
+            const yScale = (y) => {
+                return svgHeight - padding.bottom - ((y - minRuntime) / (maxRuntime - minRuntime)) * (svgHeight - padding.top - padding.bottom);
+            };
+            
+            // Create SVG
+            let svg = `<svg width="100%" height="100%" viewBox="0 0 ${svgWidth} ${svgHeight}">`;
+            
+            // Add grid lines
+            svg += `<g class="grid">`;
+            
+            // Horizontal grid lines
+            const runtimeStep = Math.ceil((maxRuntime - minRuntime) / 5);
+            for (let i = Math.floor(minRuntime); i <= Math.ceil(maxRuntime); i += runtimeStep) {
+                const y = yScale(i);
+                svg += `<line x1="${padding.left}" y1="${y}" x2="${svgWidth - padding.right}" y2="${y}" stroke="${textColor}" stroke-opacity="0.1" />`;
+                svg += `<text x="${padding.left - 10}" y="${y + 5}" text-anchor="end" fill="${textColor}" font-size="12">${i}</text>`;
+            }
+            
+            // Vertical grid lines
+            const yearRange = maxYear - minYear;
+            const yearStep = yearRange > 20 ? Math.ceil(yearRange / 10) : 5;
+            for (let i = Math.floor(minYear); i <= Math.ceil(maxYear); i += yearStep) {
+                const x = xScale(i);
+                svg += `<line x1="${x}" y1="${padding.top}" x2="${x}" y2="${svgHeight - padding.bottom}" stroke="${textColor}" stroke-opacity="0.1" />`;
+                svg += `<text x="${x}" y="${svgHeight - padding.bottom + 20}" text-anchor="middle" fill="${textColor}" font-size="12">${i}</text>`;
+            }
+            
+            svg += `</g>`;
+            
+            // Add axes
+            svg += `<g class="axes">`;
+            svg += `<line x1="${padding.left}" y1="${svgHeight - padding.bottom}" x2="${svgWidth - padding.right}" y2="${svgHeight - padding.bottom}" stroke="${textColor}" stroke-width="2" />`;
+            svg += `<line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${svgHeight - padding.bottom}" stroke="${textColor}" stroke-width="2" />`;
+            
+            // Axis labels
+            svg += `<text x="${svgWidth / 2}" y="${svgHeight - 10}" text-anchor="middle" fill="${textColor}" font-size="14">Year</text>`;
+            svg += `<text x="${15}" y="${svgHeight / 2}" transform="rotate(-90, 15, ${svgHeight / 2})" text-anchor="middle" fill="${textColor}" font-size="14">Average Runtime (minutes)</text>`;
+            svg += `</g>`;
+            
+            // Add the line
+            svg += `<g class="line">`;
+            let pathD = `M${xScale(chartData[0].year)},${yScale(chartData[0].runtime)}`;
+            
+            for (let i = 1; i < chartData.length; i++) {
+                pathD += ` L${xScale(chartData[i].year)},${yScale(chartData[i].runtime)}`;
+            }
+            
+            svg += `<path d="${pathD}" fill="none" stroke="${primaryColor}" stroke-width="3" />`;
+            
+            // Add data points
+            chartData.forEach(d => {
+                svg += `<circle cx="${xScale(d.year)}" cy="${yScale(d.runtime)}" r="5" fill="${secondaryColor}" stroke="${primaryColor}" stroke-width="2">`;
+                svg += `<title>Year: ${d.year}, Runtime: ${d.runtime} min</title>`;
+                svg += `</circle>`;
+            });
+            
+            svg += `</g>`;
+            svg += `</svg>`;
+            
+            chartContainer.innerHTML = svg;
+        }
+        
+        // Toggle functions
+        function toggleTrend() {
+            const trendContent = document.getElementById('trendContent');
+            trendContent.classList.toggle('active');
+            toggleChevron(document.getElementById('trendHeader'));
+        }
+        
+        function toggleTable() {
+            const tableContent = document.getElementById('tableContent');
+            tableContent.classList.toggle('active');
+            toggleChevron(document.getElementById('tableHeader'));
+        }
+        
+        function toggleChevron(element) {
+            const icon = element.querySelector('i');
+            if (icon.classList.contains('fa-chevron-down')) {
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set up event listeners
+            document.getElementById('modeToggle').addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const icon = document.querySelector('#modeToggle i');
+                if (document.body.classList.contains('dark-mode')) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                    localStorage.setItem('darkMode', 'enabled');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                    localStorage.setItem('darkMode', 'disabled');
+                }
+                
+                // Refresh the chart with the new theme
+                processRuntimeData(runtimeData);
+            });
+            
+            document.getElementById('trendHeader').addEventListener('click', toggleTrend);
+            document.getElementById('tableHeader').addEventListener('click', toggleTable);
+            
+            // Check for dark mode preference
+            const darkModePreference = localStorage.getItem('darkMode');
+            if (darkModePreference === 'enabled') {
+                document.body.classList.add('dark-mode');
+                const icon = document.querySelector('#modeToggle i');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+            
+            // Load and process data
+            processRuntimeData(runtimeData);
+            
+            // Handle window resize to redraw the chart
+            window.addEventListener('resize', () => {
+                processRuntimeData(runtimeData);
+            });
+
+            // For demo purposes, add more data points
+            runtimeData = [
+                {"startYear":189,"Average_Runtime":45.0},
+                {"startYear":1897,"Average_Runtime":50.0},
+                {"startYear":1905,"Average_Runtime":55.2},
+                {"startYear":1915,"Average_Runtime":65.7},
+                {"startYear":195,"Average_Runtime":70.3},
+                {"startYear":1935,"Average_Runtime":78.6},
+                {"startYear":1945,"Average_Runtime":87.2},
+                {"startYear":1955,"Average_Runtime":94.5},
+                {"startYear":1965,"Average_Runtime":102.8},
+                {"startYear":1975,"Average_Runtime":108.3},
+                {"startYear":1985,"Average_Runtime":105.7},
+                {"startYear":1995,"Average_Runtime":111.2},
+                {"startYear":2005,"Average_Runtime":119.8},
+                {"startYear":2015,"Average_Runtime":122.5},
+                {"startYear":2020,"Average_Runtime":125.2}
+            ];
+            processRuntimeData(runtimeData);
+        });
+
+        // Add function to update the data
+        function updateRuntimeData(jsonData) {
+            try {
+                runtimeData = JSON.parse(jsonData);
+                processRuntimeData(runtimeData);
+                return true;
+            } catch (e) {
+                console.error("Error parsing JSON data:", e);
+                return false;
+            }
+        }
+    </script>
+</body>
+</html>
