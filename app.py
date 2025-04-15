@@ -2,8 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from helpers import *
 from pandas import isnull
 from numpy import isnan
-# from gemini import *
-from gemini_lite import *
+from gemini_V2 import *
 import json 
 
 app=Flask(__name__)
