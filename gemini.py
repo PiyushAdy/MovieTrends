@@ -67,35 +67,3 @@ def Interpret_HTML(Html_data,data_type):
     response = chat_session.send_message(prompt)
     return response.text
 
-
-def AI_Suggestions(lat,lon,resources,practices,plant_type,soil_type,plant_name,issue=None):
-    prompt=f"""
-    following is the data of a farm .  {"Provide resolution to issue of "+issue +". utilize the given data for more information " if (issue!=None and issue!="") else "give some suggestions for him on the basis of the given data"}
-    1. latitude {lat}
-    2. longitude {lon}
-    3. Resources Available {resources}
-    4. Farming Practices {practices}
-    5. Plant Type {plant_type}
-    6. Plant Name {plant_name}
-    7. Soil Type {soil_type}
-    8. Look into previous chats for more information
-
-    # Instructions
-    1. Exclusively use the following tags: <h5>, <h6>, <b>, <li> ,<ul> , <u> and <p> . 
-    2. Try not to give the previously given recommendations again 
-    3. Strictly refrain from using any of the following tags: <!DOCTYPE html>, <head>, <title>, <body>
-    4. Use related LSI (Latent Semantic Indexing) keywords to enrich the content.
-    5. Use friendly and encouraging tone English and follow the Simple friendly and encouraging tone English Wikipedia style guidelines.
-    6. Incase of an error have some catchy and humourous phrase to cover it up without stating the error code
-    7. response should strictly not include markdown
-    8. make all headings in bold 
-    
-    Note: Failure to comply with the specified constraints will make the response invalid.
-
-  """
-    response = chat_session.send_message(prompt)
-    return response.text
-    
-
-# data=Interpret_HTML(get_top10_both("Drama",2019,HTML=True));
-# print(data)
