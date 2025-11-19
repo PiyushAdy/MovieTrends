@@ -59,7 +59,7 @@
             padding: 0 20px;
         }
 
-        /* Header Styles */
+        
         header {
             background-color: var(--card-bg);
             box-shadow: var(--shadow);
@@ -115,7 +115,7 @@
             margin-left: 20px;
         }
 
-        /* Hero Section */
+        
         .hero {
             background: var(--hero-bg);
             color: white;
@@ -137,12 +137,12 @@
             opacity: 0.9;
         }
 
-        /* Main Content */
+        
         .main-content {
             padding: 20px 0 60px;
         }
 
-        /* AI Trend Analysis */
+        
         .trend-analysis {
             margin-bottom: 40px;
             background-color: var(--card-bg);
@@ -203,7 +203,7 @@
             color: var(--text-dark);
         }
 
-        /* Movies Table */
+        
         .movies-table-container {
             overflow-x: auto;
             background-color: var(--card-bg);
@@ -265,7 +265,7 @@
             text-align: center;
         }
 
-        /* Footer */
+        
         footer {
             background-color: var(--dark);
             color: var(--light);
@@ -273,7 +273,7 @@
             padding: 30px 0;
         }
 
-        /* Back Button */
+        
         .back-btn {
             display: inline-flex;
             align-items: center;
@@ -297,7 +297,7 @@
             margin-right: 8px;
         }
 
-        /* Responsive Design */
+        
         @media (max-width: 768px) {
             .hero h1 {
                 font-size: 2rem;
@@ -325,7 +325,7 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
+    
     <header>
         <div class="container">
             <nav>
@@ -352,14 +352,14 @@
         </div>
     </section>
 
-    <!-- Main Content -->
+    
     <section class="main-content">
         <div class="container">
             <a href="/" class="back-btn">
                 <i class="fas fa-arrow-left"></i> Back to Dashboard
             </a>
 
-            <!-- AI Trend Analysis -->
+            
             <div class="trend-analysis">
                 <div class="trend-header" id="trendHeader">
                     <span>AI Trend Analysis</span>
@@ -372,7 +372,7 @@
                 </div>
             </div>
 
-            <!-- Movies Table -->
+            
             <div class="movies-table-container">
                 <div class="movies-table-header">
                     Movie Listings
@@ -384,16 +384,16 @@
         </div>
     </section>
 
-    <!-- Footer -->
+    
     <footer>
         <div class="container">
             <p>&copy; 2025 MovieTrends. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- JavaScript -->
+    
     <script>
-        // Dark Mode Toggle
+        
         const modeToggle = document.getElementById('modeToggle');
         modeToggle.addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
@@ -407,7 +407,7 @@
             }
         });
 
-        // Trend Analysis Toggle
+        
         const trendHeader = document.getElementById('trendHeader');
         const trendContent = document.getElementById('trendContent');
 
@@ -427,9 +427,8 @@
             }
         }
 
-        // Check for URL parameters to determine if we should automatically expand sections
+        
         window.addEventListener('DOMContentLoaded', () => {
-            // Get the dark mode preference from localStorage if available
             const darkModePreference = localStorage.getItem('darkMode');
             if (darkModePreference === 'enabled') {
                 document.body.classList.add('dark-mode');
@@ -439,7 +438,7 @@
             }
         });
 
-        // Save dark mode preference
+        
         modeToggle.addEventListener('click', () => {
             if (document.body.classList.contains('dark-mode')) {
                 localStorage.setItem('darkMode', 'enabled');
