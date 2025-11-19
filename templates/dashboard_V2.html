@@ -461,12 +461,12 @@
         </div>
     </section>
 
-    <!-- Team Section -->
+    
     <section id="team" class="team-section">
         <div class="container">
             <h2 class="section-title">Meet Our Team</h2>
             <div class="team-members">
-                <!-- TM1 -->
+                
                 <div class="team-member">
                     
                     <div class="member-info">
@@ -479,7 +479,7 @@
                     </div>
                 </div>
 
-                <!-- TM2 -->
+                
                 <div class="team-member">
                     
                     <div class="member-info">
@@ -492,7 +492,7 @@
                     </div>
                 </div>
 
-                <!-- TM3 -->
+                
                 <div class="team-member">
                     <div class="member-info">
                         <h3 class="member-name">Reedima Kathuria</h3>
@@ -514,9 +514,9 @@
         </div>
     </footer>
 
-    <!-- JS -->
+    
     <script>
-        // Dark Mode Toggle
+
         const modeToggle = document.getElementById('modeToggle');
         modeToggle.addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
@@ -530,13 +530,13 @@
             }
         });
 
-        //var names
+        
         const topMoviesHeader = document.getElementById('topMoviesHeader');
         const topMoviesContent = document.getElementById('topMoviesContent');
         const analysisHeader = document.getElementById('analysisHeader');
         const analysisContent = document.getElementById('analysisContent');
 
-        // toggling current section and closing other section if open
+        
         topMoviesHeader.addEventListener('click', () => {
             
             topMoviesContent.classList.toggle('active');
@@ -560,22 +560,7 @@
             }
         });
 
-        // Form Validation
-        
-        //const movieSearchForm = document.getElementById('movieSearchForm');
-        //movieSearchForm.addEventListener('submit', (e) => {
-        //   const genre = document.getElementById('genre').value;
-        //    const year = document.getElementById('year').value;
-        //    
-        //    if (genre === '' && year === '') {
-        //       e.preventDefault();
-        //        alert('Please select at least one filter (Genre or Year)');
-        //        return false;
-        //   }    
-        //    return true;
-        //});
-
-        // Auto-open logic
+       
         window.addEventListener('load', () => {
             topMoviesHeader.click();
         });
